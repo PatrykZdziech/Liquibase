@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+<changeSet author="mami" id="cotnelu-1-1">
+		<createTable tableName="groups">
+			<column name="id" type="number(19)">
+				<constraints primaryKey="true" primaryKeyName="grou_pk" />
+			</column>
+			<column name="name" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="varchar2(100)">
+				<constraints nullable="true" />
+			</column>			
+			<column name="link" type="varchar2(100)">
+				<constraints nullable="true" />
+			</column>
+			<column name="grou_mast_id" type="number(19)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-1-2">
+		<createSequence sequenceName="groups_seq" />
+	</changeSet>
+		<changeSet  author="mami" id="cotnelu-1-3">  
+	    <addUniqueConstraint    
+	            columnNames="name"
+	            constraintName="grou_name_uk"  
+	            tableName="groups"
+	            validate="true"/>  
+    </changeSet>
+    <changeSet author="mami" id="cotnelu-1-4">
+    <addForeignKeyConstraint baseTableName="groups"
+                             baseColumnNames="grou_mast_id"
+                             constraintName="grou_grma_fk"
+                             referencedTableName="groups"
+                             referencedColumnNames="id"
+                             onDelete="SET NULL"
+                             onUpdate="CASCADE"/>
+</changeSet>
+	<changeSet author="mami" id="cotnelu-2-1">
+		<createTable tableName="users">
+			<column name="mail" type="varchar2(100)">
+				<constraints primaryKey="true" primaryKeyName="user_pk" />
+			</column>
+			<column name="name" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_name" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-3-1">
+		<createTable tableName="instruments">
+			<column name="id" type="number(19)">
+				<constraints primaryKey="true" primaryKeyName="inst_pk" />
+			</column>
+			<column name="name" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet  author="mami" id="cotnelu-3-2">  
+	    <addUniqueConstraint    
+	            columnNames="name"
+	            constraintName="inst_name_uk"  
+	            tableName="instruments"
+	            validate="true"/>  
+    </changeSet>    
+	<changeSet author="mami" id="cotnelu-3-3">
+		<createSequence sequenceName="instruments_seq" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-4-1">
+		<createTable tableName="files">
+			<column name="id" type="number(19)">
+				<constraints primaryKey="true" primaryKeyName="file_pk" />
+			</column>
+			<column name="name" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="group" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-4-2">
+		<createSequence sequenceName="files_seq" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-5-1">
+		<createTable tableName="events">
+			<column name="id" type="number(19)">
+				<constraints primaryKey="true" primaryKeyName="even_pk" />
+			</column>			
+			<column name="name" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="date" type="timestamptz">
+				<constraints nullable="false" />
+			</column>
+			<column name="location" type="varchar2(100)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-5-2">
+		<createSequence sequenceName="events_seq" />
+	</changeSet>
+	
+	<changeSet author="mami" id="cotnelu-6_1">
+		<createTable tableName="group_users">
+			<column name="grou_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="user_id" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6-1-1">
+		<addForeignKeyConstraint
+			baseColumnNames="grou_id" baseTableName="group_users"
+			constraintName="GRUS_GROP_FK" referencedColumnNames="id"
+			referencedTableName="groups" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6-1-2">
+		<addForeignKeyConstraint
+			baseColumnNames="user_id" baseTableName="group_users"
+			constraintName="GRUS_USER_FK" referencedColumnNames="mail"
+			referencedTableName="users" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_2">
+	    <addPrimaryKey columnNames="GROU_ID, USER_ID"
+	                   constraintName="PK_GRUS"
+	                   tableName="group_users"
+	                   validate="true"/>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_3">
+		<createTable tableName="group_files">
+			<column name="grou_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="file_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6-3-1">
+		<addForeignKeyConstraint
+			baseColumnNames="grou_id" baseTableName="group_files"
+			constraintName="GRFI_GROP_FK" referencedColumnNames="id"
+			referencedTableName="groups" />
+	</changeSet>
+		<changeSet author="mami" id="cotnelu-6-3-2">
+		<addForeignKeyConstraint
+			baseColumnNames="file_id" baseTableName="group_files"
+			constraintName="GRFI_FILE_FK" referencedColumnNames="id"
+			referencedTableName="files" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_4">
+	    <addPrimaryKey columnNames="GROU_ID, FILE_ID"
+	                   constraintName="PK_GRFI"
+	                   tableName="group_files"
+	                   validate="true"/>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_5">
+	<createTable tableName="group_events">
+			<column name="grou_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="even_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6-5-1">
+		<addForeignKeyConstraint
+			baseColumnNames="grou_id" baseTableName="group_events"
+			constraintName="GREV_GROP_FK" referencedColumnNames="id"
+			referencedTableName="groups" />
+	</changeSet>
+		<changeSet author="mami" id="cotnelu-6-5-2">
+		<addForeignKeyConstraint
+			baseColumnNames="even_id" baseTableName="group_events"
+			constraintName="GREV_EVEN_FK" referencedColumnNames="id"
+			referencedTableName="events" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_6">
+	    <addPrimaryKey columnNames="GROU_ID, EVEN_ID"
+	                   constraintName="PK_GREV"
+	                   tableName="group_events"
+	                   validate="true"/>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_7">
+		<createTable tableName="user_instruments">
+			<column name="user_id" type="varchar2(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="inst_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6-7-1">
+		<addForeignKeyConstraint
+			baseColumnNames="user_id" baseTableName="user_instruments"
+			constraintName="USIN_USER_FK" referencedColumnNames="mail"
+			referencedTableName="users" />
+	</changeSet>
+		<changeSet author="mami" id="cotnelu-6-7-2">
+		<addForeignKeyConstraint
+			baseColumnNames="inst_id" baseTableName="user_instruments"
+			constraintName="USIN_INST_FK" referencedColumnNames="id"
+			referencedTableName="instruments" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_8">
+	    <addPrimaryKey columnNames="USER_ID, INST_ID"
+	                   constraintName="PK_USIN"
+	                   tableName="user_instruments"
+	                   validate="true"/>
+	</changeSet>
+		<changeSet author="mami" id="cotnelu-6_9">
+		<createTable tableName="instrument_files">
+			<column name="inst_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+			<column name="file_id" type="number(19)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6-9-1">
+		<addForeignKeyConstraint
+			baseColumnNames="inst_id" baseTableName="instrument_files"
+			constraintName="INFI_INST_FK" referencedColumnNames="id"
+			referencedTableName="instruments" />
+	</changeSet>
+		<changeSet author="mami" id="cotnelu-6-9-2">
+		<addForeignKeyConstraint
+			baseColumnNames="file_id" baseTableName="instrument_files"
+			constraintName="INFI_FILE_FK" referencedColumnNames="id"
+			referencedTableName="files" />
+	</changeSet>
+	<changeSet author="mami" id="cotnelu-6_10">
+	    <addPrimaryKey columnNames="INST_ID, FILE_ID"
+	                   constraintName="PK_INFI"
+	                   tableName="instrument_files"
+	                   validate="true"/>
+	</changeSet>
+</databaseChangeLog>
